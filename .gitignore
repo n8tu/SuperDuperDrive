@@ -3,7 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-.C:/
 
 
 ### STS ###
@@ -33,3 +32,4 @@ target/
 
 ### MacOs ###
 .DS_Store
+/C:/
