@@ -1,10 +1,7 @@
 package com.faisal.superduperdrive.mappers;
 
 import com.faisal.superduperdrive.models.Note;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,5 +14,8 @@ public interface NoteMapper {
 
     @Select("SELECT * FROM NOTES")
     List<Note> getAllNotes();
+
+    @Delete("DELETE FROM NOTES WHERE noteId = #{id}")
+    void deleteNote(Integer noteId);
 
 }
