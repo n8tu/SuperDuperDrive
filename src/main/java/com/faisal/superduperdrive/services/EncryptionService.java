@@ -17,36 +17,28 @@ import java.util.Base64;
 @Service
 public class EncryptionService {
 
-    public String encryptValue(String data, String key) {
-        byte[] encryptedValue = null;
-
+    public static String encryptValue(String strToEncrypt, String secret) {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            encryptedValue = cipher.doFinal(data.getBytes("UTF-8"));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-                | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
-            System.out.println(e.getMessage());
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(secret),"AES"));
+            return Base64.getEncoder()
+                    .encodeToString(cipher.doFinal(strToEncrypt.getBytes()));
+        } catch (Exception e) {
+            System.out.println("Error while encrypting: " + e.toString());
         }
-
-        return Base64.getEncoder().encodeToString(encryptedValue);
+        return null;
     }
 
-    public String decryptValue(String data, String key) {
-        byte[] decryptedValue = null;
-
+    public static String decryptValue(String strToDecrypt, String secret) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            decryptedValue = cipher.doFinal(Base64.getDecoder().decode(data));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            System.out.println(e.getMessage());
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(secret),"AES"));
+            return new String(cipher.doFinal(Base64.getDecoder()
+                    .decode(strToDecrypt)));
+        } catch (Exception e) {
+            System.out.println("Error while decrypting: " + e.toString());
         }
-
-        return new String(decryptedValue);
+        return null;
     }
 
     public String getHashedValue(String data, String salt) {
@@ -68,6 +60,12 @@ public class EncryptionService {
     public String generateSalt(){
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = secureRandom.generateSeed(20);
+        return new String(Base64.getEncoder().encodeToString(salt));
+    }
+
+    public String generateKey(){
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = secureRandom.generateSeed(16);
         return new String(Base64.getEncoder().encodeToString(salt));
     }
 }

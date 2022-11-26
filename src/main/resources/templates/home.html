@@ -145,8 +145,13 @@
                                 <tbody>
                                 <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <div class="d-flex justify-content-around align-items-center">
+                                            <button type="button" class="btn btn-success">Edit</button>
+                                            <form action="#" th:action="@{${'/credential/delete/' + credential.getId()}}" method="POST">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                     <th th:text="${credential.getUrl()}" scope="row"></th>
                                     <td th:text="${credential.getUsername()}"></td>
