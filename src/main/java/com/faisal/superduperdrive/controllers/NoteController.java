@@ -4,10 +4,7 @@ import com.faisal.superduperdrive.models.Note;
 import com.faisal.superduperdrive.services.NoteService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class NoteController {
@@ -18,7 +15,7 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @PostMapping("/note/create")
+    @PostMapping("/note")
     public String createNote(Note note, Authentication auth){
         noteService.insertNote(note,auth);
         return "redirect:/";
@@ -29,4 +26,11 @@ public class NoteController {
         noteService.deleteNote(noteId);
         return "redirect:/";
     }
+
+    @RequestMapping(value = "/note" , method = RequestMethod.PUT)
+    public String updateNote(Note note, @RequestParam Integer noteId){
+        noteService.updateNote(note, noteId);
+        return "redirect:/";
+    }
+
 }
