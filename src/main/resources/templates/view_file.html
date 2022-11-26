@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${file.getFilename()}"></title>
+</head>
+<body>
+    <img th:src="@{${'data:' + file.getContentType() + ';base64,' + file.viewFile()}}"/>
+</body>
+</html>
