@@ -83,7 +83,7 @@
                                     <tr th:each="note : ${notes}">
                                         <td>
                                             <div class="d-flex justify-content-around align-items-center">
-                                                <button type="button" class="btn btn-success">Edit</button>
+                                                <button type="button" class="btn btn-success"  th:attr="onclick=|showNoteModal(${note.getId()},'${note.getTitle()}','${note.getDescription()}','UPDATE')|">Edit</button>
                                                 <form action="#" th:action="@{${'/note/delete/' + note.getId()}}" method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -107,7 +107,9 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" th:action="@{/note/create}" th:object="${note}" method="POST">
+                                        <form id="note-form" action="#" th:action="@{/note}" th:object="${note}" method="POST">
+                                            <input type="hidden" name="_method" value="POST" id="note-form-method">
+                                            <input type="hidden" name="noteId" id="note-id" value="">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
                                                 <input type="text" th:field="*{title}" class="form-control" id="note-title" maxlength="20" required>
@@ -126,6 +128,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
@@ -146,7 +149,7 @@
                                 <tr th:each="credential : ${credentials}">
                                     <td>
                                         <div class="d-flex justify-content-around align-items-center">
-                                            <button type="button" class="btn btn-success">Edit</button>
+                                            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal(${credential.getId()},'${credential.getUrl()}','${credential.getUsername()}','${encryption.decryptValue(credential.getPassword(),credential.getKey())}','UPDATE')|">Edit</button>
                                             <form action="#" th:action="@{${'/credential/delete/' + credential.getId()}}" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="btn btn-danger">Delete</button>
@@ -171,8 +174,9 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" th:action="@{/credential/create}" th:object="${credential}" method="POST">
+                                        <form action="#" th:action="@{/credential}" th:object="${credential}" method="POST">
                                             <input type="hidden" name="credentialId" id="credential-id">
+                                            <input type="hidden" name="_method" id="credential-form-method" value="POST">
                                             <div class="form-group">
                                                 <label for="credential-url" class="col-form-label">URL</label>
                                                 <input type="text" th:field="*{url}" class="form-control" id="credential-url" maxlength="100" required>
@@ -207,7 +211,8 @@
         <!--For opening the note modal-->
         <script type="text/javascript">
             // For opening the note modal
-            function showNoteModal(noteId, noteTitle, noteDescription) {
+            function showNoteModal(noteId, noteTitle, noteDescription, requestMethod) {
+                $('#note-form-method').val(requestMethod === "UPDATE" ? "PUT" : "POST");
                 $('#note-id').val(noteId ? noteId : '');
                 $('#note-title').val(noteTitle ? noteTitle : '');
                 $('#note-description').val(noteDescription ? noteDescription : '');
@@ -215,13 +220,16 @@
             }
 
             // For opening the credentials modal
-            function showCredentialModal(credentialId, url, username, password) {
+            function showCredentialModal(credentialId, url, username, password, requestMethod) {
+                $('#credential-form-method').val(requestMethod === "UPDATE" ? "PUT" : "POST");
                 $('#credential-id').val(credentialId ? credentialId : '');
                 $('#credential-url').val(url ? url : '');
                 $('#credential-username').val(username ? username : '');
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+
+
         </script>
     </body>
 </html>

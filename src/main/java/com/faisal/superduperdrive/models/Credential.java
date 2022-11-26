@@ -1,6 +1,8 @@
 package com.faisal.superduperdrive.models;
 
+
 public class Credential {
+
 
     private Integer id;
     private String url;
@@ -65,4 +67,7 @@ public class Credential {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+
+
 }
