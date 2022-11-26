@@ -17,7 +17,7 @@ import java.util.Base64;
 @Service
 public class EncryptionService {
 
-    public static String encryptValue(String strToEncrypt, String secret) {
+    public String encryptValue(String strToEncrypt, String secret) {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(secret),"AES"));
@@ -29,7 +29,7 @@ public class EncryptionService {
         return null;
     }
 
-    public static String decryptValue(String strToDecrypt, String secret) {
+    public String decryptValue(String strToDecrypt, String secret) {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(secret),"AES"));
