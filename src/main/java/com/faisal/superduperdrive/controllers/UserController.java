@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UserController {
@@ -25,14 +26,18 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String submitRegisterForm(User user , Model model){
+    public String submitRegisterForm(User user , RedirectAttributes attr) {
+        if(user.getUsername().isEmpty()){
+            attr.addFlashAttribute("error","Username cannot be empty");
+            return "redirect:/signup";
+        }
         if(!userService.isAvailableUsername(user.getUsername())){
-            model.addAttribute("error",true);
-            return "signup";
+            attr.addFlashAttribute("error","Username already registered");
+            return "redirect:/signup";
         }
         userService.createUser(user);
-        model.addAttribute("success",true);
-        return "signup";
+        attr.addFlashAttribute("success","You successfully signed up!");
+        return "redirect:/login";
     }
 
 
@@ -40,5 +45,6 @@ public class UserController {
     public String getLoginPage(){
         return "login";
     }
+
 
 }

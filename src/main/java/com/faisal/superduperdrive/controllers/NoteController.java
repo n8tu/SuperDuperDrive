@@ -22,14 +22,14 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/note/delete/{noteId}" , method = RequestMethod.DELETE)
-    public String deleteNote(@PathVariable Integer noteId){
-        noteService.deleteNote(noteId);
+    public String deleteNote(@PathVariable Integer noteId, Authentication auth){
+        noteService.deleteNote(noteId, auth);
         return "redirect:/";
     }
 
     @RequestMapping(value = "/note" , method = RequestMethod.PUT)
-    public String updateNote(Note note, @RequestParam Integer noteId){
-        noteService.updateNote(note, noteId);
+    public String updateNote(Note note, @RequestParam Integer noteId, Authentication auth){
+        noteService.updateNote(note, noteId, auth);
         return "redirect:/";
     }
 

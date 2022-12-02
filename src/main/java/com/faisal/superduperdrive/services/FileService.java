@@ -15,10 +15,12 @@ public class FileService {
 
     private final FileMapper fileMapper;
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    public FileService(FileMapper fileMapper, UserService userService) {
+    public FileService(FileMapper fileMapper, UserService userService, AuthenticationService authenticationService) {
         this.fileMapper = fileMapper;
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     public int uploadFile(MultipartFile file, Authentication auth) throws IOException {
@@ -33,15 +35,20 @@ public class FileService {
         return -1;
     }
 
-    public File getFile(Integer id){
-        return fileMapper.getFile(id);
+    public File getFile(Integer id, Authentication auth){
+        return fileMapper.getFileById(id, userService.getUserId(auth));
     }
 
-    public List<File> getAllFiles(){
-        return fileMapper.getAllFiles();
+    public List<File> getAllFiles(Authentication auth){
+        return fileMapper.getAllFiles(userService.getUserId(auth));
     }
 
-    public void deleteFile(Integer id){
-        fileMapper.deleteFile(id);
+    public void deleteFile(Integer id, Authentication auth){
+        fileMapper.deleteFile(id, userService.getUserId(auth));
+    }
+
+    public boolean isUploaded(MultipartFile file, Authentication auth){
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        return fileMapper.getFileByName(filename, userService.getUserId(auth)) != null;
     }
 }

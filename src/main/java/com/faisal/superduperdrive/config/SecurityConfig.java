@@ -27,25 +27,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        // Allow authenticated users requests to visit these urls
         http.authorizeRequests()
-                .antMatchers("/").authenticated();
+                .antMatchers("/css/*","/js/*")
+                .permitAll()
 
-        // Reject authenticated users requests to visit these urls
-        http.authorizeRequests()
-                        .antMatchers("/login","/signup").not().authenticated();
+                .and()
 
-        // Allow all visitors to requests to access all remaining urls
-        http.authorizeRequests()
-                        .anyRequest().permitAll();
+                .authorizeRequests()
+                .antMatchers("/login","/signup")
+                .not()
+                .authenticated()
+
+                .and()
+
+                .authorizeRequests()
+                .antMatchers("/","/*","/**")
+                .authenticated();
+
+
 
         http.formLogin()
-                .loginPage("/login");
-
-        http.formLogin()
+                .loginPage("/login")
                 .defaultSuccessUrl("/");
 
         http.csrf().disable();
         http.headers().frameOptions().disable();
+
     }
+
 }

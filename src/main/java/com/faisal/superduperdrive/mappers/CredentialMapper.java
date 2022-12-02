@@ -13,15 +13,15 @@ public interface CredentialMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id" , keyColumn = "credentialId")
     void insertCredential(Credential credential);
 
-    @Select("SELECT * FROM CREDENTIALS")
-    List<Credential> getAllCredentials();
+    @Select("SELECT * FROM CREDENTIALS WHERE userId = #{userId}")
+    List<Credential> getAllCredentials(Integer userId);
 
-    @Delete("DELETE FROM CREDENTIALS WHERE credentialId = #{id}")
-    void deleteCredential(Integer id);
+    @Delete("DELETE FROM CREDENTIALS WHERE credentialId = #{id} AND userId = #{userId}")
+    void deleteCredential(Integer id, Integer userId);
 
     @Select("SELECT * FROM CREDENTIALS WHERE credentialId = #{id}")
     Credential getCredentialById(Integer id);
 
-    @Update("UPDATE CREDENTIALS SET url = #{url}, username = #{username}, password = #{password} WHERE credentialid = #{id}")
-    void updateCredential(Credential credential);
+    @Update("UPDATE CREDENTIALS SET url = #{credential.url}, username = #{credential.username}, password = #{credential.password} WHERE credentialId = #{credential.id} AND userId = #{userId}")
+    void updateCredential(Credential credential, Integer userId);
 }

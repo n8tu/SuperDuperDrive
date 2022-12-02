@@ -23,20 +23,20 @@ public class NoteService {
         noteMapper.insertNote(new Note(null, note.getTitle(), note.getDescription(),userId));
     }
 
-    public List<Note> getAllNotes(){
-        return noteMapper.getAllNotes();
+    public List<Note> getAllNotes(Authentication auth){
+        return noteMapper.getAllNotes(userService.getUserId(auth));
     }
 
-    public void deleteNote(Integer id){
-        noteMapper.deleteNote(id);
+    public void deleteNote(Integer id, Authentication auth){
+        noteMapper.deleteNote(id, userService.getUserId(auth));
     }
 
     public Note getNote(Integer id){
         return noteMapper.getNote(id);
     }
 
-    public void updateNote(Note note, Integer noteId){
+    public void updateNote(Note note, Integer noteId, Authentication auth){
         note.setId(noteId);
-        noteMapper.updateNote(note);
+        noteMapper.updateNote(note, userService.getUserId(auth));
     }
 }

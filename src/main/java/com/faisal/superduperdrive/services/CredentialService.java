@@ -27,22 +27,22 @@ public class CredentialService {
         credentialMapper.insertCredential(new Credential(null, credential.getUrl(), credential.getUsername(), credential.getKey(), credential.getPassword(), userId));
     }
 
-    public List<Credential> getAllCredentials(){
-        return credentialMapper.getAllCredentials();
+    public List<Credential> getAllCredentials(Authentication auth){
+        return credentialMapper.getAllCredentials(userService.getUserId(auth));
     }
 
-    public void deleteCredential(Integer id){
-        credentialMapper.deleteCredential(id);
+    public void deleteCredential(Integer id, Authentication auth){
+        credentialMapper.deleteCredential(id, userService.getUserId(auth));
     }
 
     public Credential getCredentialById(Integer id){
         return credentialMapper.getCredentialById(id);
     }
 
-    public void updatedCredential(Credential credential, Integer credentialId){
+    public void updateCredential(Credential credential, Integer credentialId, Authentication auth){
         String key = getCredentialById(credentialId).getKey();
         credential.setId(credentialId);
         credential.setPassword(encryptionService.encryptValue(credential.getPassword(), key));
-        credentialMapper.updateCredential(credential);
+        credentialMapper.updateCredential(credential, userService.getUserId(auth));
     }
 }

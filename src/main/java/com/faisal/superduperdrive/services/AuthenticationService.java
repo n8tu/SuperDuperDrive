@@ -41,4 +41,5 @@ public class AuthenticationService implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
+
 }

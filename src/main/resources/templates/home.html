@@ -4,8 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
         <title>Home</title>
     </head>
     <body class="p-3 mb-2 bg-light text-black">
@@ -25,6 +24,13 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
+                        <div th:if="${hasError}" class="alert alert-danger my-2">
+                            <span th:text="${hasError}"></span>
+                        </div>
+                        <div th:if="${success}" class="alert alert-success fill-parent">
+                            <h1  class="display-5" id="success">Success</h1>
+                            <span th:text="${success}"></span>
+                        </div>
                         <form action="#" th:action="@{/file/upload}" enctype="multipart/form-data" method="POST">
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
@@ -66,7 +72,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+                        <button style="margin: 0.25em;" type="button" id="create-note-form" class="btn btn-info float-right" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
 
@@ -83,8 +89,8 @@
                                     <tr th:each="note : ${notes}">
                                         <td>
                                             <div class="d-flex justify-content-around align-items-center">
-                                                <button type="button" class="btn btn-success"  th:attr="onclick=|showNoteModal(${note.getId()},'${note.getTitle()}','${note.getDescription()}','UPDATE')|">Edit</button>
-                                                <form action="#" th:action="@{${'/note/delete/' + note.getId()}}" method="POST">
+                                                <button type="button" th:id="${'note-edit-' + note.getId()}" class="btn btn-success"  th:attr="onclick=|showNoteModal(${note.getId()},'${note.getTitle()}','${note.getDescription()}','UPDATE')|">Edit</button>
+                                                <form action="#" th:id="${'note-delete-' + note.getId()}" th:action="@{${'/note/delete/' + note.getId()}}" method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
@@ -123,7 +129,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
+                                        <button type="button" id="note-form-submit" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +137,7 @@
 
                     </div>
                     <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
+                        <button style="margin: 0.25em;" type="button" id="create-credential-form" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
                         </button>
 
@@ -149,16 +155,16 @@
                                 <tr th:each="credential : ${credentials}">
                                     <td>
                                         <div class="d-flex justify-content-around align-items-center">
-                                            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal(${credential.getId()},'${credential.getUrl()}','${credential.getUsername()}','${encryption.decryptValue(credential.getPassword(),credential.getKey())}','UPDATE')|">Edit</button>
-                                            <form action="#" th:action="@{${'/credential/delete/' + credential.getId()}}" method="POST">
+                                            <button type="button" th:id="${'credential-edit-' + credential.getId()}" class="btn btn-success" th:attr="onclick=|showCredentialModal(${credential.getId()},'${credential.getUrl()}','${credential.getUsername()}','${encryption.decryptValue(credential.getPassword(),credential.getKey())}','UPDATE')|">Edit</button>
+                                            <form action="#" th:id="${'credential-delete-' + credential.getId()}" th:action="@{${'/credential/delete/' + credential.getId()}}" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="btn btn-danger">Delete</button>
                                             </form>
                                         </div>
                                     </td>
-                                    <th th:text="${credential.getUrl()}" scope="row"></th>
-                                    <td th:text="${credential.getUsername()}"></td>
-                                    <td th:text="${credential.getPassword()}"></td>
+                                    <th th:id="${'credential-url-' + credential.getId()}" th:text="${credential.getUrl()}" scope="row"></th>
+                                    <td th:id="${'credential-username-' + credential.getId()}" th:text="${credential.getUsername()}"></td>
+                                    <td th:id="${'credential-password-' + credential.getId()}" th:text="${credential.getPassword()}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -194,7 +200,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+                                        <button type="button" id="credential-form-submit" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -231,5 +237,8 @@
 
 
         </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     </body>
 </html>

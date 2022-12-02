@@ -22,14 +22,14 @@ public class CredentialController {
     }
 
     @RequestMapping(value = "/credential/delete/{credentialId}", method = RequestMethod.DELETE)
-    public String deleteCredential(@PathVariable Integer credentialId){
-        credentialService.deleteCredential(credentialId);
+    public String deleteCredential(@PathVariable Integer credentialId, Authentication auth){
+        credentialService.deleteCredential(credentialId, auth);
         return "redirect:/";
     }
 
     @RequestMapping(value = "/credential", method = RequestMethod.PUT)
-    public String deleteCredential(Credential credential, @RequestParam Integer credentialId){
-        credentialService.updatedCredential(credential, credentialId);
+    public String updateCredential(Credential credential, @RequestParam Integer credentialId, Authentication auth){
+        credentialService.updateCredential(credential,credentialId,auth);
         return "redirect:/";
     }
 }
